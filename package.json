@@ -1,0 +1,14 @@
+{
+  "name": "docs-view",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:build": "vitepress build docs",
+    "docs:dev": "vitepress dev docs"
+  },
+  "devDependencies": {
+    "chokidar": "^5.0.0",
+    "vitepress": "^1.6.0"
+  }
+}

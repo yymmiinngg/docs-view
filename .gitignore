@@ -1,0 +1,15 @@
+# Node
+node_modules/
+package-lock.json
+
+# VitePress 构建产物
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# IDE
+.idea/
+.vscode/
+
+# 系统
+.DS_Store
+*.log
