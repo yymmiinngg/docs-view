@@ -19,7 +19,11 @@ function autoSidebar() {
           text: f.replace(/\.md$/, ''),
           link: `/${e.name}/${f.replace(/\.md$/, '')}`,
         }))
-      if (items.length) sidebar[`/${e.name}/`] = [{ text: e.name, items }]
+      if (items.length) {
+        const group = [{ text: e.name, items }]
+        sidebar[`/${e.name}/`] = group
+        sidebar['/'] = (sidebar['/'] || []).concat(group)
+      }
     }
   } catch { /* no docs */ }
   return sidebar
@@ -31,6 +35,7 @@ export default defineConfig({
   description: '文档查看工具 — VitePress',
   base: '/docs/',
   cleanUrls: true,
+  ignoreDeadLinks: true,
   lastUpdated: true,
   vite: {
     server: {
