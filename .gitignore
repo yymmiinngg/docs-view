@@ -6,9 +6,10 @@ package-lock.json
 docs/.vitepress/dist/
 docs/.vitepress/cache/
 
-# 文档内容不入库（本地/部署端各自维护）
+# 文档内容不入库（子目录文档各自维护）
 docs/*
 !docs/.vitepress/
+!docs/index.md
 docs/.vitepress/*
 !docs/.vitepress/config.mjs
 

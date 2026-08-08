@@ -13,7 +13,7 @@ function autoSidebar() {
       let files
       try { files = readdirSync(join(docsRoot, e.name)) } catch { continue }
       const items = files
-        .filter((f) => f.endsWith('.md'))
+        .filter((f) => f.endsWith('.md') && f !== 'index.md')
         .sort((a, b) => a.localeCompare(b, 'zh'))
         .map((f) => ({
           text: f.replace(/\.md$/, ''),
