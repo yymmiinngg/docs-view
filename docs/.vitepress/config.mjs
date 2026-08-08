@@ -1,4 +1,29 @@
 import { defineConfig } from 'vitepress'
+import { readdirSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+function autoSidebar() {
+  const docsRoot = dirname(fileURLToPath(import.meta.url)) + '/..'
+  const sidebar = {}
+  try {
+    const entries = readdirSync(docsRoot, { withFileTypes: true })
+    for (const e of entries) {
+      if (!e.isDirectory() || e.name.startsWith('.') || e.name === 'node_modules') continue
+      let files
+      try { files = readdirSync(join(docsRoot, e.name)) } catch { continue }
+      const items = files
+        .filter((f) => f.endsWith('.md'))
+        .sort((a, b) => a.localeCompare(b, 'zh'))
+        .map((f) => ({
+          text: f.replace(/\.md$/, ''),
+          link: `/${e.name}/${f.replace(/\.md$/, '')}`,
+        }))
+      if (items.length) sidebar[`/${e.name}/`] = [{ text: e.name, items }]
+    }
+  } catch { /* no docs */ }
+  return sidebar
+}
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -14,6 +39,7 @@ export default defineConfig({
   },
   themeConfig: {
     nav: [{ text: '首页', link: '/' }],
+    sidebar: autoSidebar(),
     search: { provider: 'local' },
     socialLinks: [],
   },
