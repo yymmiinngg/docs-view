@@ -160,11 +160,15 @@ async function handle(req, res) {
         const idx = join(statPath, 'index.html')
         if (await sendFile(res, idx, MIME['.html'])) return
         const first = await firstDoc(statPath)
+        console.error('[debug] firstDoc(%s) = %s', statPath, first)
         if (first) {
-          res.writeHead(302, { Location: pathname + first })
+          const loc = pathname + first
+          console.error('[debug] 302 -> %s', loc)
+          res.writeHead(302, { Location: loc })
           res.end()
           return
         }
+        console.error('[debug] firstDoc null, 404')
       } else {
         const mime = MIME[extname(statPath).toLowerCase()] || 'application/octet-stream'
         if (await sendFile(res, statPath, mime)) return
