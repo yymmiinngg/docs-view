@@ -32,6 +32,7 @@ export default defineConfig({
   lastUpdated: true,
   head: [
     ['style', {}, `
+      html { overflow-y: scroll; }
       :root { --vp-layout-max-width: 1600px; }
       .vp-doc .container,
       .VPDoc .container,
