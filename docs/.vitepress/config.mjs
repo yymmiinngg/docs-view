@@ -39,9 +39,14 @@ export default defineConfig({
   lastUpdated: true,
   head: [
     ['style', {}, `
-      .VPDoc .container { max-width: none !important; }
-      .VPDoc .container .content { max-width: none !important; }
-      .VPDoc.has-aside .content-container { max-width: none !important; }
+      :root { --vp-layout-max-width: 100%; }
+      .vp-doc .container,
+      .VPDoc .container,
+      .VPDoc .content,
+      .VPDoc .content-container,
+      .content-container {
+        max-width: 100% !important;
+      }
     `],
   ],
   vite: {
