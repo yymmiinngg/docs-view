@@ -39,13 +39,13 @@ export default defineConfig({
   lastUpdated: true,
   head: [
     ['style', {}, `
-      :root { --vp-layout-max-width: 1200px; }
+      :root { --vp-layout-max-width: 1600px; }
       .vp-doc .container,
       .VPDoc .container,
       .VPDoc .content,
       .VPDoc .content-container,
       .content-container {
-        max-width: 1200px !important;
+        max-width: 1600px !important;
       }
     `],
   ],
