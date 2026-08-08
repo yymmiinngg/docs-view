@@ -31,6 +31,7 @@ export default defineConfig({
   cleanUrls: true,
   ignoreDeadLinks: true,
   lastUpdated: true,
+  appearance: true,
   head: [
     ['style', {}, `
       html { overflow-y: scroll; }
