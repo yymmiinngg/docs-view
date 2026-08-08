@@ -37,6 +37,13 @@ export default defineConfig({
   cleanUrls: true,
   ignoreDeadLinks: true,
   lastUpdated: true,
+  head: [
+    ['style', {}, `
+      .VPDoc .container { max-width: none !important; }
+      .VPDoc .container .content { max-width: none !important; }
+      .VPDoc.has-aside .content-container { max-width: none !important; }
+    `],
+  ],
   vite: {
     server: {
       allowedHosts: ['qchan.digitpartner.ltd'],
