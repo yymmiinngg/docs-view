@@ -187,8 +187,7 @@ const watcher = chokidar.watch(DOCS_ROOT, {
 let buildTimer = null
 let building = false
 
-watcher.on('all', (event, path) => {
-  console.log('[docsview] watcher:', event, path)
+watcher.on('all', () => {
   clearTimeout(buildTimer)
   buildTimer = setTimeout(async () => {
     if (building) return
