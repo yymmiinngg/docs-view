@@ -131,7 +131,7 @@ async function handle(req, res) {
       if (dirPath && existsSync(dirPath)) {
         try {
           if ((await stat(dirPath)).isDirectory()) {
-            res.writeHead(302, { Location: pathname + '/' + (url.search || '') })
+            res.writeHead(302, { Location: encodeURI(pathname + '/' + (url.search || '')) })
             res.end()
             return
           }
@@ -161,7 +161,7 @@ async function handle(req, res) {
         if (await sendFile(res, idx, MIME['.html'])) return
         const first = await firstDoc(statPath)
         if (first) {
-          res.writeHead(302, { Location: pathname + first })
+          res.writeHead(302, { Location: encodeURI(pathname + first) })
           res.end()
           return
         }
@@ -180,13 +180,15 @@ const PORT = readPort()
 await ensureBuild()
 
 const watcher = chokidar.watch(DOCS_ROOT, {
-  ignored: ['**/.vitepress/dist/**', '**/.vitepress/cache/**', '**/node_modules/**'],
+  ignored: (p) => p.includes('.vitepress/dist') || p.includes('.vitepress/cache') || p.includes('node_modules'),
   ignoreInitial: true,
+  depth: 10,
 })
 let buildTimer = null
 let building = false
 
-watcher.on('all', () => {
+watcher.on('all', (event, path) => {
+  console.log('[docsview] watcher:', event, path)
   clearTimeout(buildTimer)
   buildTimer = setTimeout(async () => {
     if (building) return
