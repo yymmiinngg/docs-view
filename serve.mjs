@@ -51,10 +51,11 @@ function readPort() {
   return 5173
 }
 
-/** 执行 vitepress build */
+/** 执行 vitepress build（直接调用 node_modules/.bin/vitepress，不依赖 PATH 中的 npm） */
 function build() {
   return new Promise((resolve, reject) => {
-    const child = spawn('npm', ['run', 'docs:build'], {
+    const vitepressBin = join(ROOT, 'node_modules', '.bin', 'vitepress')
+    const child = spawn(process.execPath, [vitepressBin, 'build', 'docs'], {
       cwd: ROOT,
       stdio: ['ignore', 'inherit', 'inherit'],
     })
