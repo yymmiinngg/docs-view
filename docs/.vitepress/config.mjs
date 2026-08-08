@@ -10,19 +10,12 @@ function autoSidebar() {
     const entries = readdirSync(docsRoot, { withFileTypes: true })
     for (const e of entries) {
       if (!e.isDirectory() || e.name.startsWith('.') || e.name === 'node_modules') continue
-      let files
-      try { files = readdirSync(join(docsRoot, e.name)) } catch { continue }
-      const items = files
-        .filter((f) => f.endsWith('.md') && f !== 'index.md')
-        .sort((a, b) => a.localeCompare(b, 'zh'))
-        .map((f) => ({
-          text: f.replace(/\.md$/, ''),
-          link: `/${e.name}/${f.replace(/\.md$/, '')}`,
-        }))
-      if (items.length) {
-        const group = [{ text: e.name, items }]
-        sidebar[`/${e.name}/`] = group
-        sidebar['/'] = (sidebar['/'] || []).concat(group)
+      let hasMd
+      try { hasMd = readdirSync(join(docsRoot, e.name)).some(f => f.endsWith('.md')) } catch { continue }
+      if (hasMd) {
+        const item = { text: e.name, link: `/${e.name}/` }
+        sidebar[`/${e.name}/`] = [item]
+        sidebar['/'] = (sidebar['/'] || []).concat([item])
       }
     }
   } catch { /* no docs */ }

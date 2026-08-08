@@ -30,7 +30,4 @@ sudo ./service.sh install    # 安装 systemd 服务
 ## 文档目录
 
 - **[pangu-sdk](/pangu-sdk/)** — 盘古 SDK 文档
-  - [快速开始](/pangu-sdk/01-快速开始) ｜ [核心概念](/pangu-sdk/02-核心概念) ｜ [策略开发](/pangu-sdk/03-策略开发) ｜ [API 参考](/pangu-sdk/04-API参考) ｜ [示例](/pangu-sdk/05-示例)
-
 - **[indicator-engine](/indicator-engine/)** — 指标引擎文档
-  - 见左侧侧边栏
