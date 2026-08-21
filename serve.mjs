@@ -180,9 +180,8 @@ const PORT = readPort()
 await ensureBuild()
 
 const watcher = chokidar.watch(DOCS_ROOT, {
-  ignored: (p) => p.includes('.vitepress/dist') || p.includes('.vitepress/cache') || p.includes('node_modules'),
+  ignored: (p) => p.includes('.vitepress'),
   ignoreInitial: true,
-  depth: 10,
 })
 let buildTimer = null
 let building = false
