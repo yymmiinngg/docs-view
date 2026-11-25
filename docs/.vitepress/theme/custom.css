@@ -1,0 +1,171 @@
+/* ==========================================================================
+   docs-view 主题
+   1. 设计变量
+   2. 布局骨架
+   3. 导航栏
+   4. 侧边栏
+   5. 正文排版
+   6. 顶部操作（复制 / 字号）
+   7. 响应式
+   ========================================================================== */
+
+/* ---------- 1. 设计变量 ---------- */
+:root {
+  --dv-gutter: 32px;          /* 左右留白，与 VitePress 默认一致 */
+  --dv-font-size: 16px;       /* 正文字号，由顶部字号按钮调节 */
+  --dv-line-height: 1.75;
+  --dv-radius: 6px;
+}
+
+/* ---------- 2. 布局骨架 ---------- */
+@media (min-width: 960px) {
+  /* 正文左边缘与顶部搜索框左边缘对齐（VitePress 的 VPDoc 带 data-v 选择器，
+     用 !important 比依赖构建哈希稳定） */
+  .VPDoc {
+    padding-left: 0 !important;
+  }
+}
+
+/* ---------- 3. 导航栏 ---------- */
+@media (min-width: 960px) {
+  /* 左侧标题区铺与侧边栏同宽同色的底，避免缩放时 content-body 白底
+     多盖出几像素造成上下竖分隔错位 */
+  .VPNavBar.has-sidebar .title {
+    background-color: var(--vp-sidebar-bg-color);
+  }
+  .VPNavBarTitle.has-sidebar .title {
+    width: calc(100% + var(--dv-gutter));
+    border-bottom: none;
+  }
+  /* 隐藏 VitePress 自带的分段线，改用整条导航栏的统一底边 */
+  .VPNavBar .divider-line {
+    display: none;
+  }
+  .VPNavBar {
+    border-bottom: none;
+  }
+  /* 画在最上层：滚动后 content-body 的半透明背景盖不住它 */
+  .VPNavBar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--vp-c-divider);
+    pointer-events: none;
+    z-index: 10;
+  }
+}
+
+/* ---------- 4. 侧边栏 ---------- */
+/* 目录树每层都是真实目录，顶层子项也要缩进 */
+.VPSidebarItem.level-0 > .items {
+  border-left: 1px solid var(--vp-c-divider);
+  padding-left: 16px;
+}
+/* 长标题单行省略，不换行 */
+.VPSidebarItem .item,
+.VPSidebarItem .item > a {
+  min-width: 0;
+}
+.VPSidebarItem .text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 5. 正文排版 ---------- */
+.vp-doc {
+  font-size: var(--dv-font-size);
+  line-height: var(--dv-line-height);
+}
+.vp-doc h1 { font-size: calc(var(--dv-font-size) * 2); }
+.vp-doc h2 { font-size: calc(var(--dv-font-size) * 1.5); }
+.vp-doc h3 { font-size: calc(var(--dv-font-size) * 1.25); }
+.vp-doc h4 { font-size: calc(var(--dv-font-size) * 1.125); }
+.vp-doc h5,
+.vp-doc h6 { font-size: var(--dv-font-size); }
+.vp-doc p,
+.vp-doc li,
+.vp-doc td,
+.vp-doc th,
+.vp-doc blockquote { font-size: inherit; }
+
+/* 表头底色 + 单元格留白，长内容表格更易读 */
+.vp-doc th {
+  background-color: var(--vp-c-bg-soft);
+  font-weight: 600;
+}
+.vp-doc th,
+.vp-doc td {
+  padding: 8px 12px;
+}
+/* 首列多是「方法/路径、地址、认证」这类短标签，避免被长内容挤成一字一行；
+   内容确实超长时表格自身可横向滚动 */
+.vp-doc th:first-child,
+.vp-doc td:first-child {
+  white-space: nowrap;
+}
+
+/* 行内代码跟随正文字号 */
+.vp-doc :not(pre) > code {
+  font-size: 0.9em;
+}
+
+/* ---------- 6. 顶部操作 ---------- */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.copy-source-actions,
+.font-size-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-source-btn,
+.font-size-btn {
+  padding: 4px 9px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--dv-radius);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.copy-source-btn:hover,
+.font-size-btn:hover {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+}
+
+.font-size-actions {
+  gap: 4px;
+}
+.font-size-btn {
+  padding: 4px 8px;
+}
+/* 当前档位高亮 */
+.font-size-btn.active {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  font-weight: 600;
+}
+
+/* ---------- 7. 响应式 ---------- */
+@media (max-width: 1199px) {
+  .copy-source-btn {
+    padding: 4px 7px;
+  }
+  .nav-actions {
+    gap: 6px;
+  }
+}

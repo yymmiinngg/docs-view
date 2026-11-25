@@ -2,6 +2,12 @@
 node_modules/
 package-lock.json
 
+# 本地专属配置（覆盖 docsview.conf，不入库）
+docsview.local.conf
+
+# 构建用的 .md 镜像
+.docsview-src/
+
 # VitePress 构建产物
 docs/.vitepress/dist/
 docs/.vitepress/cache/
@@ -9,9 +15,9 @@ docs/.vitepress/cache/
 # 文档内容不入库（子目录文档各自维护）
 docs/*
 !docs/.vitepress/
-!docs/index.md
 docs/.vitepress/*
 !docs/.vitepress/config.mjs
+!docs/.vitepress/theme/
 
 # IDE
 .idea/

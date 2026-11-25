@@ -1,34 +1,28 @@
-import { defineConfig } from 'vitepress'
-import { readdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { dirname, resolve as resolvePath } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { scanDocTree, buildSidebar, buildRewrites } from '../../src/docs.mjs'
+import { DEFAULT_HOME_SOURCE } from '../../src/constants.mjs'
 
-function autoSidebar() {
-  const docsRoot = dirname(fileURLToPath(import.meta.url)) + '/..'
-  const sidebar = {}
-  try {
-    const entries = readdirSync(docsRoot, { withFileTypes: true })
-    for (const e of entries) {
-      if (!e.isDirectory() || e.name.startsWith('.') || e.name === 'node_modules') continue
-      let files
-      try { files = readdirSync(join(docsRoot, e.name)).filter(f => f.endsWith('.md') && f !== 'index.md') } catch { continue }
-      if (!files.length) continue
-      files.sort((a, b) => a.localeCompare(b, 'zh'))
-      const items = files.map(f => ({ text: f.replace(/\.md$/, ''), link: `/${e.name}/${f.replace(/\.md$/, '')}` }))
-      const group = { text: e.name, collapsed: true, items }
-      sidebar[`/${e.name}/`] = [group]
-      sidebar['/'] = (sidebar['/'] || []).concat([group])
-    }
-  } catch { /* no docs */ }
-  return sidebar
-}
+// 构建用的 .md 镜像目录由 serve.mjs 通过环境变量传入；原始 DOCS_ROOT 不放程序文件
+const DOCS_ROOT = process.env.DOCSVIEW_DOCS_ROOT
+  ? resolvePath(process.env.DOCSVIEW_DOCS_ROOT)
+  : dirname(fileURLToPath(import.meta.url)) + '/..'
+const HOME_SOURCE = process.env.DOCSVIEW_HOME_SOURCE || DEFAULT_HOME_SOURCE
 
-export default defineConfig({
+// 文档树只扫描一次：sidebar 与 rewrites 共用，和服务端扫描规则同源
+const TREE = scanDocTree(DOCS_ROOT, { homeSource: HOME_SOURCE })
+
+// 导出普通对象而非 defineConfig(...)，这样文档根目录放到项目外时
+// 配置文件不依赖从该目录解析 vitepress 包。
+export default {
   lang: 'zh-CN',
   title: 'docs-view',
   description: '文档查看工具 — VitePress',
   base: '/docs/',
+  srcDir: DOCS_ROOT,
   cleanUrls: true,
+  // 首页和缺 index.md 的目录用内部名生成列表，构建时输出为对应目录的 index.html
+  rewrites: buildRewrites(DOCS_ROOT, { homeSource: HOME_SOURCE }),
   ignoreDeadLinks: true,
   lastUpdated: true,
   appearance: true,
@@ -44,6 +38,15 @@ export default defineConfig({
         max-width: 1600px !important;
       }
     `],
+    // 首屏渲染前应用上次选的字号，避免先大后小的闪烁
+    ['script', {}, `
+      try {
+        var s = Number(localStorage.getItem('docsview-font-size'));
+        if (s >= 13 && s <= 20) {
+          document.documentElement.style.setProperty('--dv-font-size', s + 'px');
+        }
+      } catch (e) {}
+    `],
   ],
   vite: {
     server: {
@@ -52,8 +55,8 @@ export default defineConfig({
   },
   themeConfig: {
     nav: [{ text: '首页', link: '/' }],
-    sidebar: autoSidebar(),
+    sidebar: buildSidebar(TREE),
     search: { provider: 'local' },
     socialLinks: [],
   },
-})
+}
